@@ -43,8 +43,14 @@ def load_networks(names, te_multipliers=None, unet_multipliers=None, dyn_dims=No
             net.mentioned_name = name
             network_on_disk.read_hash()
             loaded_networks.append(net)
-        except Exception:
-            print(f'\nFailed to load LoRA: "{name}"\n')
+        except FileNotFoundError:
+            print(f'\nLoRA not found: "{name}"\n')
+            continue
+        except ValueError as e:
+            print(f'\nInvalid LoRA format: "{name}" - {e}\n')
+            continue
+        except Exception as e:
+            print(f'\nUnexpected error loading LoRA "{name}": {type(e).__name__}: {e}\n')
             continue
 
     compiled_lora_targets = []
